@@ -1,0 +1,13 @@
+{
+  "name": "mario",
+  "version": "1.0.0",
+  "description": "Mario game",
+  "author": "Piotr Klupa",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.0"
+  }
+}
