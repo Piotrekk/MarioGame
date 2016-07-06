@@ -1,4 +1,5 @@
 const MARIO_DATA = {
+  Y: 400,
   jump: 30
 }
 
@@ -8,38 +9,72 @@ class Mario extends RunLoop {
     super();
 
     this.x = 500;
-    this.y = 400;
+    this.y = 410;
 
     this.movement = null;
-    this.jumping = false;
+
+    this.jump_data = {
+      canJump: true,
+      isJumping: false,
+      direction: 'up'
+    };
+
+    this.renderMario_data = {
+      type: 'stand'
+    };
 
     this.render();
     this.controlls();
   }
 
   render() {
-    ctx.fillStyle = 'red';
-    ctx.fillRect(this.x, this.y, 20, 20);
-    ctx.save();
+    this.renderMarioType();
   }
 
   update() {
-    if (this.jumping)
+    if (this.jump_data.isJumping)
       this.processJump();
+
+    this.changeRenderMarioType()
   }
 
   jump() {
-    this.jumpFrame = this.frames;
-    this.jumping = true;
-
+    this.jump_data.jumpFrame = this.frames;
+    this.jump_data.isJumping = true;
+    this.jump_data.direction = 'up';
   }
 
   processJump() {
-    this.y -= 5;
-
-    if (this.frames > this.jumpFrame + 5) {
-      this.y += 5;
+    if (this.frames === (this.jump_data.jumpFrame + 20) && this.jump_data.direction === 'up')
+      this.jump_data.direction = 'down';
+    else if (this.frames === (this.jump_data.jumpFrame + 39) && this.jump_data.direction === 'down') {
+      this.jump_data.isJumping = false;
+      this.jump_data.canJump = true;
+      return false;
     }
+
+    if (this.jump_data.direction === 'up')
+      this.y -= 5;
+    else if (this.jump_data.direction === 'down')
+      this.y += 5;
+  }
+
+  renderMarioType() {
+    const self = this;
+
+    const marioImage = new Image();
+    marioImage.src = `media/img/mario/mario-${this.renderMario_data.type}.png`;
+
+    ctx.drawImage(marioImage, self.x, self.y, 60, 70);
+  }
+
+  changeRenderMarioType() {
+    if (this.jump_data.isJumping)
+      this.renderMario_data.type = 'jump';
+    else if (this.movement)
+      this.renderMario_data.type = 'step';
+    else if (!this.jump_data.isJumping)
+      this.renderMario_data.type = 'stand';
   }
 
   getMoveDirection() {
@@ -57,7 +92,7 @@ class Mario extends RunLoop {
           self.movement = 'left';
           break;
         case 37:
-          self.movement = 'right'
+          self.movement = 'right';
           break;
       }
     });
@@ -66,8 +101,8 @@ class Mario extends RunLoop {
       let key = event.keyCode || event.charCode;
 
       if (key === 32)
-        if (!self.isJumping)
-          self.isJumping = true,
+        if (self.jump_data.canJump)
+          self.jump_data.canJump = false,
           self.jump();
     });
 
@@ -82,7 +117,7 @@ class Mario extends RunLoop {
           self.movement = null;
           break;
         case 32:
-          self.isJumping = false;
+          self.jump_data.canJump = false;
           break;
       }
     });

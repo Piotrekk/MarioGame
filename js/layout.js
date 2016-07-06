@@ -1,3 +1,17 @@
+const LAYOUT_DATA = {
+  trees: {
+    width: 180,
+    height: 90,
+    y: 500
+  },
+  clouds: {
+    width: 70,
+    height: 50
+  },
+  groundHeight: 120,
+  backgroundColor: '#5c94fc'
+};
+
 class Layout {
 
   constructor(currentLevel) {
@@ -5,20 +19,6 @@ class Layout {
     this.layoutWidth = currentLevel.width;
 
     this.layoutVelocity = 0;
-
-    this.settings = {
-      trees: {
-        width: 180,
-        height: 90,
-        y: 500
-      },
-      clouds: {
-        width: 70,
-        height: 50
-      },
-      groundHeight: 120,
-      backgroundColor: '#5c94fc'
-    }
 
     this.render();
   }
@@ -42,8 +42,8 @@ class Layout {
   }
 
   _rednerBackground() {
-    ctx.fillStyle = this.settings.backgroundColor;
-    ctx.fillRect(0 + this.layoutVelocity, 0, this.layoutWidth, canvas.height - this.settings.groundHeight);
+    ctx.fillStyle = LAYOUT_DATA.backgroundColor;
+    ctx.fillRect(0 + this.layoutVelocity, 0, this.layoutWidth, canvas.height - LAYOUT_DATA.groundHeight);
     ctx.save();
   }
 
@@ -54,7 +54,7 @@ class Layout {
     const pattern = ctx.createPattern(groundImage, 'repeat');
 
     ctx.fillStyle = pattern;
-    ctx.fillRect(0 + this.layoutVelocity, canvas.height - this.settings.groundHeight, this.layoutWidth, this.settings.groundHeight);
+    ctx.fillRect(0 + this.layoutVelocity, canvas.height - LAYOUT_DATA.groundHeight, this.layoutWidth, LAYOUT_DATA.groundHeight);
     ctx.save();
   }
 
@@ -65,7 +65,7 @@ class Layout {
     treeImage.src = 'media/img/tree.png';
 
     _.each(self.currentLevel.trees, (tree) => {
-      ctx.drawImage(treeImage, tree.x + self.layoutVelocity, (canvas.height - self.settings.groundHeight - self.settings.trees.height), self.settings.trees.width, self.settings.trees.height);
+      ctx.drawImage(treeImage, tree.x + self.layoutVelocity, (canvas.height - LAYOUT_DATA.groundHeight - LAYOUT_DATA.trees.height), LAYOUT_DATA.trees.width, LAYOUT_DATA.trees.height);
       ctx.save();
     });
   }
@@ -77,7 +77,7 @@ class Layout {
     cloudImage.src = 'media/img/cloud.png';
 
     _.each(self.currentLevel.clouds, (cloud) => {
-      ctx.drawImage(cloudImage, cloud.x + self.layoutVelocity, cloud.y, self.settings.clouds.width, self.settings.clouds.height);
+      ctx.drawImage(cloudImage, cloud.x + self.layoutVelocity, cloud.y, LAYOUT_DATA.clouds.width, LAYOUT_DATA.clouds.height);
       ctx.save();
     });
   }
