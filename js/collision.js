@@ -1,0 +1,11 @@
+class Collision {
+
+  constructor() {
+
+  }
+
+  update() {
+
+  }
+
+}

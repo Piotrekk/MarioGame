@@ -1,4 +1,6 @@
 const MARIO_DATA = {
+  width: 60,
+  height: 70,
   Y: 400,
   jump: 30
 }
@@ -16,7 +18,10 @@ class Mario extends RunLoop {
     this.jump_data = {
       canJump: true,
       isJumping: false,
-      direction: 'up'
+      direction: 'up',
+      jumpVelocity: 7,
+      jumpTopFrame: 24,
+      jumpDownFrame: () => { return (this.jump_data.jumpTopFrame * 2) - 1 }
     };
 
     this.renderMario_data = {
@@ -24,7 +29,15 @@ class Mario extends RunLoop {
     };
 
     this.render();
-    this.controlls();
+
+    PubSub.Subscribe('mario.move.left', () => { this.movement = 'left'; });
+    PubSub.Subscribe('mario.move.right', () => { this.movement = 'right'; });
+    PubSub.Subscribe('mario.move.none', () => { this.movement = null; });
+    PubSub.Subscribe('mario.jump', () => {
+      if (this.jump_data.canJump)
+        this.jump_data.canJump = false,
+        this.jump();
+    });
   }
 
   render() {
@@ -45,27 +58,27 @@ class Mario extends RunLoop {
   }
 
   processJump() {
-    if (this.frames === (this.jump_data.jumpFrame + 20) && this.jump_data.direction === 'up')
+    if (this.frames === (this.jump_data.jumpFrame + this.jump_data.jumpTopFrame) && this.jump_data.direction === 'up')
       this.jump_data.direction = 'down';
-    else if (this.frames === (this.jump_data.jumpFrame + 39) && this.jump_data.direction === 'down') {
+    else if (this.frames === (this.jump_data.jumpFrame + (this.jump_data.jumpTopFrame * 2) - 1) && this.jump_data.direction === 'down') {
       this.jump_data.isJumping = false;
       this.jump_data.canJump = true;
       return false;
     }
 
     if (this.jump_data.direction === 'up')
-      this.y -= 5;
+      this.y -= this.jump_data.jumpVelocity;
     else if (this.jump_data.direction === 'down')
-      this.y += 5;
+      this.y += this.jump_data.jumpVelocity;
   }
 
   renderMarioType() {
     const self = this;
 
     const marioImage = new Image();
-    marioImage.src = `media/img/mario/mario-${this.renderMario_data.type}.png`;
+    marioImage.src = `media/img/mario2/mario2-${this.renderMario_data.type}.png`;
 
-    ctx.drawImage(marioImage, self.x, self.y, 60, 70);
+    ctx.drawImage(marioImage, self.x, self.y, MARIO_DATA.width, MARIO_DATA.height);
   }
 
   changeRenderMarioType() {
@@ -78,49 +91,12 @@ class Mario extends RunLoop {
   }
 
   getMoveDirection() {
+    if (this.movement) this.processCollision();
     return this.movement;
   }
 
-  controlls() {
-    const self = this;
-
-    window.addEventListener('keydown', () => {
-      let key = event.keyCode || event.charCode;
-
-      switch (key) {
-        case 39:
-          self.movement = 'left';
-          break;
-        case 37:
-          self.movement = 'right';
-          break;
-      }
-    });
-
-    window.addEventListener('keypress', () => {
-      let key = event.keyCode || event.charCode;
-
-      if (key === 32)
-        if (self.jump_data.canJump)
-          self.jump_data.canJump = false,
-          self.jump();
-    });
-
-    window.addEventListener('keyup', () => {
-      let key = event.keyCode || event.charCode;
-
-      switch (key) {
-        case 39:
-          self.movement = null;
-          break;
-        case 37:
-          self.movement = null;
-          break;
-        case 32:
-          self.jump_data.canJump = false;
-          break;
-      }
-    });
+  processCollision() {
+    this.y + 100;
   }
 
 }

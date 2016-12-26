@@ -7,9 +7,10 @@ class RunLoop {
   }
 
   run() {
-    const self = this;
-
-    setInterval(() => self.frames += 1, GAME_SETTINGS.second / GAME_SETTINGS.FPS);
+    setInterval(() => {
+      this.frames += 1;
+      GAME_SETTINGS.second / GAME_SETTINGS.FPS
+    });
   }
 
 }

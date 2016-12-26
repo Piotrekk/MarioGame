@@ -11,12 +11,22 @@ gulp.task('babel', () => {
   return gulp.src('js/**')
     .pipe(babel({
     	presets: ['es2015']
-    }).on('error', (e) => logError(e) ))
+    }).on('error', (e) => logError(e)))
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('concat', () => {
-  return gulp.src(['js/run-loop.js', 'js/mario.js', 'js/layout.js', 'js/game.js'])
+  return gulp.src([
+      'js/settings.js',
+      'js/pub-sub.js',
+      'js/controlls.js',
+      'js/levels.js',
+      'js/run-loop.js',
+      'js/mario.js',
+      'js/layout.js',
+      'js/collision.js',
+      'js/game.js'
+    ])
     .pipe(concat('all.js'))
     .pipe(gulp.dest('dist'));
 });
