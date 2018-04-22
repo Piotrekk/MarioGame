@@ -25,6 +25,7 @@ gulp.task('concat', () => {
       'js/mario.js',
       'js/layout.js',
       'js/collision.js',
+      'js/bullet.js',
       'js/game.js'
     ])
     .pipe(concat('all.js'))

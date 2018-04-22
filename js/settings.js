@@ -7,7 +7,7 @@ canvas.height = 600;
 const GAME_SETTINGS = {
   FPS: 60,
   second: 1000,
-  speed: 3,
+  speed: 4,
   layoutRange: {
     left: 450,
     right: 550
@@ -31,6 +31,19 @@ const LAYOUT_DATA = {
   lands: {
     width: 33
   },
+  bullet: {
+    width: 10,
+    height: 10,
+    color: 'yellow'
+  },
   groundHeight: 120,
   backgroundColor: '#5c94fc'
 };
+
+const MARIO_DATA = {
+  width: 60,
+  height: 70,
+  x: 500,
+  y: 410,
+  jump: 30
+}

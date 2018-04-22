@@ -4,8 +4,7 @@ body {
 }
 
 canvas {
-  margin: 0 auto;
-  margin-top: 50px;
+  margin: 50px auto;
   display: block;
   border: 1px solid black;
 }

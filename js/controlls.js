@@ -16,16 +16,8 @@ class Controlls {
         case 37:
           PubSub.Publish('mario.move.right');
           break;
-      }
-    });
-
-    window.addEventListener('keyup', (event) => {
-      const key = event.keyCode || event.charCode;
-
-      switch (key) {
-        case 39:
-        case 37:
-          PubSub.Publish('mario.move.none');
+        case 38:
+          PubSub.Publish('mario.jump.do');
           break;
       }
     });
@@ -33,8 +25,11 @@ class Controlls {
     window.addEventListener('keypress', (event) => {
       let key = event.keyCode || event.charCode;
 
-      if (key === 32)
-        PubSub.Publish('mario.jump');
+      switch (key) {
+        case 32:
+          PubSub.Publish('mario.bullet.new');
+          break;
+      }
     });
 
   }

@@ -3,9 +3,9 @@ class GameEngine {
   constructor() {
     this.frames = 0;
 
-    this.currentLevel = LEVELS[1];
+    GameEngine.currentLevel = LEVELS[1];
 
-    this.layout = new Layout(this.currentLevel);
+    this.layout = new Layout(GameEngine.currentLevel);
     this.controlls = new Controlls();
     this.mario = new Mario();
 
@@ -38,5 +38,5 @@ class GameEngine {
 
 
 window.onload = () => {
-  new GameEngine();
+  window.game = new GameEngine();
 }

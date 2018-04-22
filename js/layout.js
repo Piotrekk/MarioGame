@@ -4,7 +4,7 @@ class Layout {
     this.currentLevel = currentLevel;
     this.layoutWidth = currentLevel.width;
 
-    this.layoutVelocity = 0;
+    Layout.layoutVelocity = 0;
 
     this.render();
   }
@@ -23,26 +23,28 @@ class Layout {
   }
 
   applyMovement(direcion) {
-    if (direcion === 'right')
-      this.layoutVelocity  += GAME_SETTINGS.speed;
-    else if (direcion === 'left')
-      this.layoutVelocity -= GAME_SETTINGS.speed;
+    console.log(Layout.layoutVelocity);
+    if (direcion === 'right') {
+      if (Layout.layoutVelocity < 100) Layout.layoutVelocity += GAME_SETTINGS.speed;
+    } else if (direcion === 'left') {
+      if (Layout.layoutVelocity > (-2500 + MARIO_DATA.width)) Layout.layoutVelocity -= GAME_SETTINGS.speed;
+    }
   }
 
   _rednerBackground() {
     ctx.fillStyle = LAYOUT_DATA.backgroundColor;
-    ctx.fillRect(0 + this.layoutVelocity, 0, this.layoutWidth, canvas.height - LAYOUT_DATA.groundHeight);
+    ctx.fillRect(0 + Layout.layoutVelocity, 0, this.layoutWidth, canvas.height - LAYOUT_DATA.groundHeight);
     ctx.save();
   }
 
   _renderGround() {
-    let groundImage = new Image();
+    const groundImage = new Image();
     groundImage.src = 'media/img/ground.png';
 
     const pattern = ctx.createPattern(groundImage, 'repeat');
 
     ctx.fillStyle = pattern;
-    ctx.fillRect(0 + this.layoutVelocity, canvas.height - LAYOUT_DATA.groundHeight, this.layoutWidth, LAYOUT_DATA.groundHeight);
+    ctx.fillRect(0 + Layout.layoutVelocity, canvas.height - LAYOUT_DATA.groundHeight, this.layoutWidth, LAYOUT_DATA.groundHeight);
     ctx.save();
   }
 
@@ -51,7 +53,7 @@ class Layout {
     treeImage.src = 'media/img/tree.png';
 
     _.each(this.currentLevel.trees, (tree) => {
-      ctx.drawImage(treeImage, tree.x + this.layoutVelocity, (canvas.height - LAYOUT_DATA.groundHeight - LAYOUT_DATA.trees.height), LAYOUT_DATA.trees.width, LAYOUT_DATA.trees.height);
+      ctx.drawImage(treeImage, tree.x + Layout.layoutVelocity, (canvas.height - LAYOUT_DATA.groundHeight - LAYOUT_DATA.trees.height), LAYOUT_DATA.trees.width, LAYOUT_DATA.trees.height);
       ctx.save();
     });
   }
@@ -61,7 +63,7 @@ class Layout {
     cloudImage.src = 'media/img/cloud.png';
 
     _.each(this.currentLevel.clouds, (cloud) => {
-      ctx.drawImage(cloudImage, cloud.x + this.layoutVelocity, cloud.y, LAYOUT_DATA.clouds.width, LAYOUT_DATA.clouds.height);
+      ctx.drawImage(cloudImage, cloud.x + Layout.layoutVelocity, cloud.y, LAYOUT_DATA.clouds.width, LAYOUT_DATA.clouds.height);
       ctx.save();
     });
   }
@@ -71,7 +73,7 @@ class Layout {
     columnImage.src = 'media/img/column.png';
 
     _.each(this.currentLevel.columns, (column) => {
-      ctx.drawImage(columnImage, column.x + this.layoutVelocity, column.y, LAYOUT_DATA.columns.width, LAYOUT_DATA.columns.height);
+      ctx.drawImage(columnImage, column.x + Layout.layoutVelocity, column.y, LAYOUT_DATA.columns.width, LAYOUT_DATA.columns.height);
       ctx.save();
     });
   }
@@ -106,7 +108,7 @@ class Layout {
       landImage.src = 'media/img/land.png';
 
       _.each(landCoOrdinates, (land) => {
-        ctx.drawImage(landImage, land.x + this.layoutVelocity, land.y, landWidth, landWidth);
+        ctx.drawImage(landImage, land.x + Layout.layoutVelocity, land.y, landWidth, landWidth);
         ctx.save();
       });
     });

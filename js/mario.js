@@ -1,75 +1,68 @@
-const MARIO_DATA = {
-  width: 60,
-  height: 70,
-  Y: 400,
-  jump: 30
-}
-
 class Mario extends RunLoop {
 
   constructor() {
     super();
 
-    this.x = 500;
-    this.y = 410;
+    this.x = MARIO_DATA.x;
+    this.y = MARIO_DATA.y;
 
     this.movement = null;
 
     this.jump_data = {
-      canJump: true,
       isJumping: false,
-      direction: 'up',
-      jumpVelocity: 7,
-      jumpTopFrame: 24,
-      jumpDownFrame: () => { return (this.jump_data.jumpTopFrame * 2) - 1 }
     };
 
     this.renderMario_data = {
       type: 'stand'
     };
 
+    const collision = new Collision();
+    this.marioXCollisionMap = collision.getMarioGroundCollision();
+
+    this.bullets = [];
+
     this.render();
 
     PubSub.Subscribe('mario.move.left', () => { this.movement = 'left'; });
     PubSub.Subscribe('mario.move.right', () => { this.movement = 'right'; });
-    PubSub.Subscribe('mario.move.none', () => { this.movement = null; });
-    PubSub.Subscribe('mario.jump', () => {
-      if (this.jump_data.canJump)
-        this.jump_data.canJump = false,
-        this.jump();
-    });
+    PubSub.Subscribe('mario.jump.do', () => { if (!this.jump_data.isJumping) this.jump(); });
+    PubSub.Subscribe('mario.bullet.new', () => this.newBullet());
   }
 
   render() {
     this.renderMarioType();
+
+    if (this.bullets.length) _.each(this.bullets, (bullet) => bullet.render());
   }
 
   update() {
-    if (this.jump_data.isJumping)
-      this.processJump();
+    this.changeRenderMarioType();
+    this.processJump();
 
-    this.changeRenderMarioType()
+    if (this.bullets.length) {
+      _.each(this.bullets, (bullet) => {
+        bullet.update(this.movement);
+        //console.log(Layout.layoutVelocity);
+        //if (bullet.x > GameEngine.currentLevel.width) {
+          console.log(bullet.x);
+        //}
+      });
+    }
   }
 
   jump() {
-    this.jump_data.jumpFrame = this.frames;
     this.jump_data.isJumping = true;
-    this.jump_data.direction = 'up';
+    this.jump_data.grow = true;
   }
 
   processJump() {
-    if (this.frames === (this.jump_data.jumpFrame + this.jump_data.jumpTopFrame) && this.jump_data.direction === 'up')
-      this.jump_data.direction = 'down';
-    else if (this.frames === (this.jump_data.jumpFrame + (this.jump_data.jumpTopFrame * 2) - 1) && this.jump_data.direction === 'down') {
-      this.jump_data.isJumping = false;
-      this.jump_data.canJump = true;
-      return false;
-    }
+    if (this.jump_data.isJumping) {
+      if (this.jump_data.grow) this.y -= 5;
+      else this.y += 5;
 
-    if (this.jump_data.direction === 'up')
-      this.y -= this.jump_data.jumpVelocity;
-    else if (this.jump_data.direction === 'down')
-      this.y += this.jump_data.jumpVelocity;
+      if (this.y <= 250) this.jump_data.grow = false;
+      if (!this.jump_data.grow && this.y >= 410) this.jump_data.isJumping = false;
+    }
   }
 
   renderMarioType() {
@@ -82,21 +75,15 @@ class Mario extends RunLoop {
   }
 
   changeRenderMarioType() {
-    if (this.jump_data.isJumping)
-      this.renderMario_data.type = 'jump';
-    else if (this.movement)
-      this.renderMario_data.type = 'step';
-    else if (!this.jump_data.isJumping)
-      this.renderMario_data.type = 'stand';
+    this.renderMario_data.type = this.jump_data.isJumping ? 'jump' : 'stand';
   }
 
   getMoveDirection() {
-    if (this.movement) this.processCollision();
     return this.movement;
   }
 
-  processCollision() {
-    this.y + 100;
+  newBullet() {
+    this.bullets.push(new Bullet(this.x, this.y));
   }
 
 }
